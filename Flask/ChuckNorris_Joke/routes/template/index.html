@@ -1,0 +1,164 @@
+<!-- Description: Added html to design simple user interface
+     Author: Mahalakshmi Ullas
+ -->
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Chuck Norris Joke App</title>
+     <style>
+         body {
+             font-family: Arial, sans-serif;
+             margin: 20px;
+         }
+         .container {
+             max-width: 600px;
+             margin: auto;
+         }
+         .section {
+             margin-bottom: 20px;
+             padding: 10px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             background-color: #f9f9f9;
+         }
+         .section h2 {
+             margin: 0;
+             font-size: 18px;
+         }
+         .joke {
+             margin-top: 10px;
+             padding: 10px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             background-color: #fff;
+         }
+     </style>
+     <script>
+         // Function to fetch a joke by unique id(GET)
+         // asyn is used to manage API calls in synchronous way
+         // This function is called once the button is clicked
+         async function getJokeid() {
+             // Fetches the input element which has id getJokeId and retrieves id entered by user
+             const jokeId = document.getElementById("getJokeId").value.trim();
+             if (!jokeId) {
+                 alert("Please enter a joke ID.");
+                 return;
+             }
+             // This sends jokeid to get request endpoint using {} and waits till the fetch is complete
+             const response = await fetch(`/jokes/${jokeId}`);
+             // Parse the JSON value and waits till the json is converted into usable JavaScript object
+             const data = await response.json();
+ 
+             // Fetches the input element which has id getJokeResult and retrieves id entered by user
+             const result = document.getElementById("getJokeResult");
+             // Checks if response is 200
+             if (response.ok) {
+                 // This updates innerHTML of the result element with new content
+                 // Creates div element with a class of joke to use for styling the displayed joke
+                 // Inserts the jokeid and joke text retrieved from the data
+                 result.innerHTML = `<div class="joke"><strong>ID:</strong> ${data.id}<br><strong>Joke:</strong> ${data.joke}</div>`;
+             } else {
+                 // Displays error message from data else displays the give message
+                 result.innerHTML = `<div class="joke"><strong>Error:</strong> ${data.error || "Unable to fetch joke."}</div>`;
+             }
+         }
+ 
+         // Function to update joke by unique id(PUT)
+         async function updateJoke() {
+             // Fetches the input element which has id updateJokeId, updateJokeText and retrieves id entered by user
+             const jokeId = document.getElementById("updateJokeId").value.trim();
+             const newJoke = document.getElementById("updateJokeText").value.trim();
+ 
+             // Checks if placeholder is empty or not
+             if (!jokeId || !newJoke) {
+                 alert("Please enter a joke ID and new joke text.");
+                 return;
+             }
+ 
+             // This sends jokeid to get request endpoint using {} and waits till the fetch is complete
+             // Converts the JS object { joke: newJoke } into a JSON string to send as the request 
+             const response = await fetch(`/jokes/${jokeId}`, {
+                 method: "PUT",
+                 headers: { "Content-Type": "application/json" },
+                 body: JSON.stringify({ joke: newJoke }),
+             });
+ 
+             // Parse the JSON value 
+             const data = await response.json();
+             // Fetches the input element which has id updateJokeResult and retrieves id entered by user
+             const result = document.getElementById("updateJokeResult");
+             // Checks if response is 200
+             if (response.ok) {
+                 // This updates innerHTML of the result element with new content
+                 // Creates div element with a class of joke to use for styling the displayed joke
+                 // Inserts the jokeid and joke text retrieved from the data
+                 result.innerHTML = `<div class="joke"><strong>Updated Joke:</strong> ${data.joke}</div>`;
+             } else {
+                 // Displays error message from data else displays the give message
+                 result.innerHTML = `<div class="joke"><strong>Error:</strong> ${data.error || "Unable to update joke."}</div>`;
+             }
+         }
+ 
+         // Function to delete joke by unique id(DELETE)
+         async function deleteJoke() {
+             // Fetches the input element which has id deleteJokeId and retrieves id entered by user
+             const jokeId = document.getElementById("deleteJokeId").value.trim();
+             if (!jokeId) {
+                 alert("Please enter a joke ID.");
+                 return;
+             }
+ 
+             // The delete request unique id is sent and deletes the value
+             const response = await fetch(`/jokes/${jokeId}`, { method: "DELETE" });
+             // Parse the JSON value and waits till the json is converted into usable JavaScript object
+             const data = await response.json();
+ 
+             // Fetches the input element which has id deleteJokeResult and retrieves id entered by user
+             const result = document.getElementById("deleteJokeResult");
+             // Checks if response is 200
+             if (response.ok) {
+                 // This updates innerHTML of the result element with new content
+                 // Creates div element with a class of joke to use for styling the displayed joke
+                 // Inserts the jokeid and joke text retrieved from the data
+                 result.innerHTML = `<div class="joke"><strong>Message:</strong> ${data.message}</div>`;
+             } else {
+                 // Displays error message from data else displays the give message
+                 result.innerHTML = `<div class="joke"><strong>Error:</strong> ${data.error || "Unable to delete joke."}</div>`;
+             }
+         }
+     </script>
+ </head>
+ <body>
+     <div class="container">
+         <h1>Chuck Norris Joke App</h1>
+ 
+         <!-- To get joke by unique id -->
+         <div class="section">
+             <h2>Get Joke by ID</h2>
+             <input type="text" id="getJokeId" placeholder="Enter Joke ID" />
+             <button onclick="getJokeid()">Get Joke</button>
+             <div id="getJokeResult"></div>
+         </div>
+ 
+         <!-- To update joke by uniqe id -->
+         <div class="section">
+             <h2>Update Joke by ID</h2>
+             <input type="text" id="updateJokeId" placeholder="Enter Joke ID" /><br>
+             <textarea id="updateJokeText" placeholder="Enter New Joke" rows="3" style="width:100%;"></textarea><br>
+             <button onclick="updateJoke()">Update Joke</button>
+             <div id="updateJokeResult"></div>
+         </div>
+ 
+         <!-- To delete joke by unique id -->
+         <div class="section">
+             <h2>Delete Joke by ID</h2>
+             <input type="text" id="deleteJokeId" placeholder="Enter Joke ID" />
+             <button onclick="deleteJoke()">Delete Joke</button>
+             <div id="deleteJokeResult"></div>
+         </div>
+     </div>
+ </body>
+ </html>
