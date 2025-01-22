@@ -1,0 +1,4 @@
+# Output/Temporary directories
+/venv/
+/__pycache__/
+routes/__pycache__/
